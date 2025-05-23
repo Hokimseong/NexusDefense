@@ -4,15 +4,15 @@ using UnityEngine.UI;
 
 public class MultipleArrowIndicator : MonoBehaviour
 {
-    public GameObject arrowPrefab; // È­»ìÇ¥ ÇÁ¸®ÆÕ (Canvas ¾È¿¡ ÀÖ¾î¾ß ÇÔ)
-    public Transform player; // ÇÃ·¹ÀÌ¾î À§Ä¡
+    public GameObject arrowPrefab; // í™”ì‚´í‘œ
+    public Transform player; 
     public Camera mainCamera;
-    private List<Transform> enemies = new List<Transform>(); // ÇöÀç Á¸ÀçÇÏ´Â Àûµé
-    private Dictionary<Transform, RectTransform> enemyArrows = new Dictionary<Transform, RectTransform>(); // Àû´ç È­»ìÇ¥ ¸ÅÇÎ
+    private List<Transform> enemies = new List<Transform>(); // í˜„ì¬ ì¡´ì¬í•˜ëŠ” ì ë“¤
+    private Dictionary<Transform, RectTransform> enemyArrows = new Dictionary<Transform, RectTransform>(); // í™”ì‚´í‘œ ë§¤í•‘
 
     void Start()
     {
-        InvokeRepeating(nameof(UpdateEnemyList), 0f, 1f); // 1ÃÊ¸¶´Ù Àû ¸ñ·Ï ¾÷µ¥ÀÌÆ®
+        InvokeRepeating(nameof(UpdateEnemyList), 0f, 1f); //ì  ëª©ë¡ ì—…ë°ì´íŠ¸
     }
 
     void UpdateEnemyList()
@@ -25,21 +25,21 @@ public class MultipleArrowIndicator : MonoBehaviour
             EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
             if (!enemyArrows.ContainsKey(enemy.transform) && !enemyAI.isDead)
             {
-                //ÀûÀ§Ä¡ »ı¼º ¹× µî·Ï
+                //ì ìœ„ì¹˜ ìƒì„± ë° ë“±ë¡
                 RectTransform newArrow = Instantiate(arrowPrefab, transform).GetComponent<RectTransform>();
                 enemyArrows[enemy.transform] = newArrow;
             }
             enemies.Add(enemy.transform);
         }
 
-        //Ç¥½Ã±â Á¤¸®
+        //í‘œì‹œê¸° ì •ë¦¬
         List<Transform> removedEnemies = new List<Transform>();
 
         foreach (Transform enemy in enemyArrows.Keys)
         {
             if (!enemies.Contains(enemy))
             {
-                Destroy(enemyArrows[enemy].gameObject); // Ç¥½Ã Á¦°Å
+                Destroy(enemyArrows[enemy].gameObject); // í‘œì‹œ ì œê±°
                 removedEnemies.Add(enemy);
             }
         }
@@ -54,7 +54,7 @@ public class MultipleArrowIndicator : MonoBehaviour
     {
         float screenWidth = Screen.width;
         float screenHeight = Screen.height;
-        float offset = 50f; // È­¸é °¡ÀåÀÚ¸®¿¡¼­ ¾à°£ ¾ÈÂÊÀ¸·Î ¹èÄ¡
+        float offset = 50f; // í™”ë©´ ì•½ê°„ ì•ˆìª½ìœ¼ë¡œ ë°°ì¹˜
 
         foreach (Transform enemy in enemies)
         {
@@ -71,15 +71,14 @@ public class MultipleArrowIndicator : MonoBehaviour
                 Vector3 enemyDir = (screenPos - new Vector3(screenWidth / 2, screenHeight / 2)).normalized;
                 Vector3 arrowScreenPos = screenPos;
 
-                //½ºÅ©¸° °æ°è¼±À¸·Î À§Ä¡ Á¶Á¤
-                if (screenPos.x < 0) arrowScreenPos.x = offset; // ¿ŞÂÊ °æ°è
-                if (screenPos.x > screenWidth) arrowScreenPos.x = screenWidth - offset; // ¿À¸¥ÂÊ °æ°è
-                if (screenPos.y < 0) arrowScreenPos.y = offset; // ¾Æ·¡ÂÊ °æ°è
-                if (screenPos.y > screenHeight) arrowScreenPos.y = screenHeight - offset; // À§ÂÊ °æ°è
+                //ìŠ¤í¬ë¦° ê²½ê³„ì„ ìœ¼ë¡œ ìœ„ì¹˜ ì¡°ì •
+                if (screenPos.x < 0) arrowScreenPos.x = offset; // ì™¼ìª½ ê²½ê³„
+                if (screenPos.x > screenWidth) arrowScreenPos.x = screenWidth - offset; // ì˜¤ë¥¸ìª½ ê²½ê³„
+                if (screenPos.y < 0) arrowScreenPos.y = offset; // ì•„ë˜ìª½ ê²½ê³„
+                if (screenPos.y > screenHeight) arrowScreenPos.y = screenHeight - offset; // ìœ„ìª½ ê²½ê³„
 
                 arrow.position = arrowScreenPos;
 
-                //È­»ìÇ¥ È¸Àü (Àû ¹æÇâÀ» °¡¸®Å°µµ·Ï)
                 float angle = Mathf.Atan2(enemyDir.y, enemyDir.x) * Mathf.Rad2Deg;
                 arrow.rotation = Quaternion.Euler(0, 0, angle);
             }
